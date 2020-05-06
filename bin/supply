@@ -9,7 +9,10 @@ DEPS_DIR=$3
 IDX=$4
 
 echo "Copying fetch_credhub_credentials.sh to profile.d directory"
+cd $(dirname $0)/..
 mkdir -p $DEPS_DIR/$IDX/profile.d
+mkdir -p $DEPS_DIR/$IDX/bin
 cp bin/fetch_credhub_credentials.sh $DEPS_DIR/$IDX/profile.d
+cp credhub $DEPS_DIR/$IDX/bin/
 echo "-----> Done."
 exit 0
