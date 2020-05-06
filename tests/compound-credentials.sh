@@ -5,6 +5,8 @@ function delete_creds {
     credhub delete -n /foo/bar/compound_json
     credhub delete -n /foo/bar/nested_json
     credhub delete -n /foo/bar/array_json
+    credhub delete -n /foo/bar/certificate
+    rm /tmp/ch-test.crt
 }
 trap delete_creds EXIT
 
@@ -41,6 +43,19 @@ function get_array_selected_json_field {
     fi
 }
 
+function get_certificate_field {
+    credhub generate -n /foo/bar/certificate -t certificate -c "foo.com" --self-sign
+    export CREDHUB_ENV_CH_TEST_CERT=/foo/bar/certificate.certificate
+    source ./bin/fetch_credhub_credentials.sh
+
+    echo "$CH_TEST_CERT" > /tmp/ch-test.crt
+    if [ "$(openssl x509 -in /tmp/ch-test.crt -subject -noout)" != "subject= /CN=foo.com" ]; then
+      echo "CH_TEST_CERT: $CH_TEST_CERT does not have a subject of 'subject= /CN=foo.com'"
+      exit 1
+    fi
+}
+
 get_single_json_field
 get_nested_json_field
 get_array_selected_json_field
+get_certificate_field
