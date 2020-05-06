@@ -4,6 +4,7 @@ set -eu
 function delete_creds {
     credhub delete -n /foo/bar/value
     credhub delete -n /foo/bar/password
+    credhub delete -n /foo/bar/json
 }
 trap delete_creds EXIT
 
@@ -29,5 +30,18 @@ function get_password {
     fi
 }
 
+function get_whole_json {
+    credhub set -n /foo/bar/json -t json -v '{ "foo": "bar" }'
+    export CREDHUB_ENV_CH_TEST_JSON=/foo/bar/json
+    source ./bin/fetch_credhub_credentials.sh
+
+    result="$(echo $CH_TEST_JSON | jq -rc)"
+    if [ "$result" != '{"foo":"bar"}' ]; then
+      echo "CH_TEST_JSON: $result does not equal '{\"foo\":\"bar\"}'"
+      exit 1
+    fi
+}
+
 get_value
 get_password
+get_whole_json

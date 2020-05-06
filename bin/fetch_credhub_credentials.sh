@@ -19,5 +19,5 @@ for env_var in $(env | grep CREDHUB_ENV_); do
   else
     echo ""
   fi
-  export $var_name="$(credhub get -n $credential_name -q)"
+  export $var_name="$(credhub get -n $credential_name -j | jq -r '.value')"
 done
