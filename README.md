@@ -27,3 +27,6 @@ The buildpack will then provide a script that at runtime will export any environ
 
 For example, including an environment variable called `CREDHUB_ENV_FOO: /foo/bar/baz` will provide the application with the `FOO` environment variable with the contents of the secret at `/foo/bar/baz` in CredHub. Secrets are looked up based on name (`credhub find -n <name>`). When multiple secrets are found, the first returned result is used and a warning output to the logs.
 
+## Testing
+
+There are some simple tests in the `tests/` directory for making sure this release works as expected and for allowing for some TDD when making changes. These expect a CredHub server to be stood up and the correct `CREDHUB_` credentials for authenticating against the server to be present. A simple way to get this working is to use [BUCC](https://github.com/starkandwayne/bucc)
