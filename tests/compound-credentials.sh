@@ -19,6 +19,7 @@ function get_single_json_field {
       echo "CH_TEST_COMPOUND_JSON: $CH_TEST_COMPOUND_JSON does not equal 'bar'"
       exit 1
     fi
+    unset CREDHUB_ENV_CH_TEST_COMPOUND_JSON
 }
 
 function get_nested_json_field {
@@ -30,6 +31,7 @@ function get_nested_json_field {
       echo "CH_TEST_NESTED_JSON: $CH_TEST_NESTED_JSON does not equal 'baz'"
       exit 1
     fi
+    unset CREDHUB_ENV_CH_TEST_NESTED_JSON
 }
 
 function get_array_selected_json_field {
@@ -41,6 +43,7 @@ function get_array_selected_json_field {
       echo "CH_TEST_ARRAY_JSON: $CH_TEST_ARRAY_JSON does not equal 'bar'"
       exit 1
     fi
+    unset CREDHUB_ENV_CH_TEST_ARRAY_JSON
 }
 
 function get_certificate_field {
@@ -53,6 +56,7 @@ function get_certificate_field {
       echo "CH_TEST_CERT: $CH_TEST_CERT does not have a subject of 'subject= /CN=foo.com'"
       exit 1
     fi
+    unset CREDHUB_ENV_CH_TEST_CERT
 }
 
 get_single_json_field

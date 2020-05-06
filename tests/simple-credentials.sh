@@ -17,6 +17,7 @@ function get_value {
       echo "CH_TEST_VALUE: $CH_TEST_VALUE does not equal 'testvalue'"
       exit 1
     fi
+    unset CREDHUB_ENV_CH_TEST_VALUE
 }
 
 function get_password {
@@ -28,6 +29,7 @@ function get_password {
       echo "CH_TEST_PASSWORD: $CH_TEST_PASSWORD does not equal 'testpassword'"
       exit 1
     fi
+    unset CREDHUB_ENV_CH_TEST_PASSWORD
 }
 
 function get_whole_json {
@@ -40,6 +42,7 @@ function get_whole_json {
       echo "CH_TEST_JSON: $result does not equal '{\"foo\":\"bar\"}'"
       exit 1
     fi
+    unset CREDHUB_ENV_CH_TEST_JSON
 }
 
 get_value
