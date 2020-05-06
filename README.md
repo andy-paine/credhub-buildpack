@@ -1,6 +1,6 @@
-# env-map-buildpack
+# credhub-buildpack
 
-Allows for fetching of secrets at runtime from CredHub into environment variables for apps. Requires bundling with `credhub` CLI.
+Allows for fetching of secrets at runtime from CredHub into environment variables for apps.
 
 ## Background
 
@@ -8,7 +8,6 @@ When deploying applications to Cloud Foundry, sometimes it is not possible to mo
 
 ## Usage
 
-> Note: This is currently non-functional until the `credhub` CLI is bundled with it.
 To use this buildpack, include [https://github.com/andy-paine/credhub-buildpack](https://github.com/andy-paine/credhub-buildpack) anywhere but the last element in the `buildpacks` field in your Cloud Foundry manifest, for example:
 ```yaml
 buildpacks:

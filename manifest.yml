@@ -1,0 +1,17 @@
+---
+language: credhub
+default_versions: []
+dependency_deprecation_dates: []
+dependencies: []
+
+include_files:
+  - README.md
+  - VERSION
+  - manifest.yml
+  - bin/detect
+  - bin/supply
+  - bin/finalize
+  - bin/release
+  - bin/fetch_credhub_credentials.sh
+  - credhub
+pre_package: scripts/download-credhub.sh
