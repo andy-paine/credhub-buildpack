@@ -23,23 +23,25 @@ CREDHUB_CLIENT - UAA client ID
 CREDHUB_SECRET - UAA client secret
 ```
 
-The buildpack will then provide a script that at runtime will export any environment variables starting with `CREDHUB_ENV_` with the value of the secret from CredHub.
+### Environment variables
+Include an environment variable of the format `CREDHUB_ENV_FOO=/foo/bar/baz` to set the value of the `FOO` environment variable at runtime with the contents of the `/foo/bar/baz` credential from CredHub.
 
-For example, including an environment variable `CREDHUB_ENV_FOO=/foo/bar/baz` will set the value of the `FOO` environment variable with the contents of the credential `/foo/bar/baz` from CredHub. Secrets are looked up based on name (`credhub find -n <name>`). When multiple secrets are found, the first returned result is used and a warning output to the logs.
+### Files
+Include an environment variable of the format `CREDHUB_FILE_password=/foo/bar/password` to create a file called `password` with the contents of the `/foo/bar/baz` credential from CredHub. Files are written to `/tmp/credhub-files/`. This can be overridden by setting the `CREDHUB_FILES_DIR` environment variable.
 
-### Compound credentials
-The JSON and certificate credential types in CredHub often need components extracting out of them. You can select these components by adding a `.` followed by the relevant `jq` selector when specifying the credential path. For example, given the following CredHub credential:
-```
-$ credhub get -n /some/json
-id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-name: /some/json
-type: json
-value:
-  foo: bar
-version_created_at: "2020-05-06T20:43:07Z"
-```
-Setting an environment variable of `CREDHUB_ENV_FOO=/some/json.foo` will set the value of the `FOO` environment variable to be `bar`.
+### Lookups and selectors
+Secrets are looked up based on name (`credhub find -n <name>`). When multiple secrets are found, the first returned result is used and a warning output to the logs. The JSON and certificate credential types in CredHub often need components extracting out of them. You can select these components by adding a `.` followed by the relevant `jq` selector when specifying the credential path.
+
+### Examples
+A full list of tested example formats can be found in the [tests/ directory](tests/).
+| Credential | Value | Type | Environemnt variable | Result |
+| ---------- | ----- | ---- | -------------------- | ------ |
+| /foo/bar   | baz   | value | CREDHUB_ENV_BAR=/foo/bar | FOO=baz |
+| /foo/baz   | faz   | password | CREDHUB_ENV_PASSWORD=/foo/baz | PASSWORD=faz |
+| /foo/jazz  | {"key": "value"} | json | CREDHUB_ENV_JSON=/foo/jazz | JSON={"key": "value"} |
+| /foo/cert  | **credhub certificate** | certificate | CREDHUB_ENV_CERT_CA=/foo/cert.ca | CERT_CA=-----BEGIN CERTIFICATE-----  etc. |
+| /foo/cert  | **credhub certificate** | certificate | CREDHUB_FILE_my_ca_cert | /tmp/credhub-files/my_ca_cert -> CA from /foo/cert |
 
 ## Testing
 
-There are some simple tests in the `tests/` directory for making sure this release works as expected and for allowing for some TDD when making changes. These expect a CredHub server to be stood up and the correct `CREDHUB_` credentials for authenticating against the server to be present. A simple way to get this working is to use [BUCC](https://github.com/starkandwayne/bucc)
+There are some simple tests in the `tests/` directory for making sure this release works as expected and for allowing for some TDD when making changes. These expect a CredHub server to be stood up and the correct `CREDHUB_` credentials for authenticating against the server to be present. A simple way to get this working is to use [BUCC](https://github.com/starkandwayne/bucc).
