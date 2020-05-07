@@ -21,4 +21,17 @@ function get_value_file {
     unset CREDHUB_FILE_ch_test_value
 }
 
+function get_certificate {
+    credhub generate -n /foo/bar/certificate -t certificate -c "foo.com" --self-sign
+    export CREDHUB_FILE_ch_test_ca=/foo/bar/certificate.ca
+    source fetch-credhub-credentials.sh
+
+    if [ "$(openssl x509 -in $CREDHUB_FILES_DIR/ch_test_ca -subject -noout)" != "subject= /CN=foo.com" ]; then
+      echo "ch_test-ca contents: $(cat $CREDHUB_FILES_DIR/ch_test_ca) does not have a subject of 'subject= /CN=foo.com'"
+      exit 1
+    fi
+    unset CREDHUB_FILE_ch_test_ca
+}
+
 get_value_file
+get_certificate
