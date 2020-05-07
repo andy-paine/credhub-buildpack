@@ -12,6 +12,7 @@ include_files:
   - bin/supply
   - bin/finalize
   - bin/release
-  - bin/fetch_credhub_credentials.sh
+  - bin/fetch-credhub-credentials.rb
+  - bin/fetch-credhub-credentials.sh
   - bin/credhub
 pre_package: scripts/download-credhub.sh
