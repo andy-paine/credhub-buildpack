@@ -13,6 +13,6 @@ cd $(dirname $0)/..
 mkdir -p $DEPS_DIR/$IDX/profile.d
 mkdir -p $DEPS_DIR/$IDX/bin
 cp bin/fetch_credhub_credentials.sh $DEPS_DIR/$IDX/profile.d
-cp credhub $DEPS_DIR/$IDX/bin/
+cp bin/credhub $DEPS_DIR/$IDX/bin/
 echo "-----> Done."
 exit 0
