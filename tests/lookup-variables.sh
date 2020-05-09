@@ -5,6 +5,7 @@ function delete_creds {
     credhub delete -n /test-org/foo
     credhub delete -n /test-org/test-space/foo
     credhub delete -n /test-org/test-space/test-app/foo
+    credhub delete -n /my-base-path/foo/baz
 }
 trap delete_creds EXIT
 
@@ -44,6 +45,21 @@ function get_app_scoped_value {
     unset CREDHUB_ENV_CH_APP_TEST_VALUE
 }
 
+function get_custom_base_path_value {
+    credhub set -n /my-base-path/foo/baz -t value -v testvalue
+    export CREDHUB_BASE_PATH=/my-base-path
+    export CREDHUB_ENV_CH_BASE_PATH_TEST_VALUE='/foo/baz'
+    source fetch-credhub-credentials.sh
+
+    if [ "$CH_BASE_PATH_TEST_VALUE" != "testvalue" ]; then
+      echo "CH_BASE_PATH_TEST_VALUE: $CH_BASE_PATH_TEST_VALUE does not equal 'testvalue'"
+      exit 1
+    fi
+    unset CREDHUB_ENV_CH_BASE_PATH_TEST_VALUE
+    unset CREDHUB_BASE_PATH
+}
+
 get_org_scoped_value
 get_space_scoped_value
 get_app_scoped_value
+get_custom_base_path_value

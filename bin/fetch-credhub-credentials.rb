@@ -2,8 +2,9 @@
 require 'open3'
 require 'json'
 
-env_dir = ARGV[0]
-file_dir = ARGV[1]
+$base_path = ARGV[0]
+env_dir = ARGV[1]
+file_dir = ARGV[2]
 
 login_stdout, login_stderr, login_status = Open3.capture3('credhub login')
 if login_status != 0
@@ -24,7 +25,7 @@ end
 
 def get_credhub_credential(credential)
   query_parts = credential.split '.'
-  credential_name = query_parts[0]
+  credential_name = "#{$base_path}/#{query_parts[0]}".gsub /\/+/, '/'
   credentials_json, stderr, status = Open3.capture3($cf_env, "credhub find -j -n #{credential_name}")
   if status != 0
     raise CredHubException, "Could not find any variables that matched #{credential_name}"
