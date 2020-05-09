@@ -29,8 +29,16 @@ Include an environment variable of the format `CREDHUB_ENV_FOO=/foo/bar/baz` to 
 ### Files
 Include an environment variable of the format `CREDHUB_FILE_password=/foo/bar/password` to create a file called `password` with the contents of the `/foo/bar/baz` credential from CredHub. Files are written to `/tmp/credhub-files/`. This can be overridden by setting the `CREDHUB_FILES_DIR` environment variable.
 
-### Lookups and selectors
-Secrets are looked up based on name (`credhub find -n <name>`). When multiple secrets are found, the first returned result is used and a warning output to the logs. The JSON and certificate credential types in CredHub often need components extracting out of them. You can select these components by adding a `.` followed by the relevant `jq` selector when specifying the credential path.
+### Lookups
+Secret paths are absolute by default. A custom base path for lookups can be specified by setting the `CREDHUB_BASE_PATH` environment variable. The following placeholders can be used in credentials paths and will be populated with the information of the application at runtime:
+* CF_ORG
+* CF_SPACE
+* CF_APP
+
+This allows users to structure their CredHub secrets in a way that matches Cloud Foundry. For example, to keep the same application configuration in multiple different environments, the environment variable `CREDHUB_ENV_PASSWORD=/$CF_SPACE/password` could be used which would be populated by the credential at `/dev/password` or `/staging/password` etc. depending on the space in which the application was deployed.
+
+### Selectors
+The JSON and certificate credential types in CredHub often need components extracting out of them. These components can be selected by adding a `.` followed by the relevant `jq` selector when specifying the credential path.
 
 ### Examples
 A full list of tested example formats can be found in the [tests/ directory](tests/).
