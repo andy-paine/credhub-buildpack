@@ -26,20 +26,10 @@ end
 def get_credhub_credential(credential)
   query_parts = credential.split '.'
   credential_name = "#{$base_path}/#{query_parts[0]}".gsub /\/+/, '/'
-  credentials_json, stderr, status = Open3.capture3($cf_env, "credhub find -j -n #{credential_name}")
-  if status != 0
-    raise CredHubException, "Could not find any variables that matched #{credential_name}"
-  end
-
-  credentials = JSON.parse(credentials_json)['credentials']
-  if credentials.length > 1
-    raise CredHubException, "Found #{credentials.length} credentials matching #{credential_name}: #{credentials.map do |c| c['name'] end.to_json}"
-  end
-
   # Select `.value` + everything after the `.` in the credential query
   query = ['.value'] + query_parts[1..-1]
   # This uses `jq` to make the selectors more familiar to people
-  cmd = "credhub get -n #{credentials[0]['name']} -j | jq -r '#{query.join '.'}'"
+  cmd = "credhub get -n #{credential_name} -j | jq -r '#{query.join '.'}'"
   credential_value, stderr, status = Open3.capture3($cf_env, cmd)
   if status != 0
     raise CredHubException "Failed to extract value from credential using: #{cmd}"
