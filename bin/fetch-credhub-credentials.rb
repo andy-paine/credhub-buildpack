@@ -12,13 +12,20 @@ if login_status != 0
   exit(login_status)
 end
 
+vcap_application = JSON.parse ENV['VCAP_APPLICATION']
+$cf_env = {
+  'CF_ORG' => vcap_application['organization_name'],
+  'CF_SPACE' => vcap_application['space_name'],
+  'CF_APP' => vcap_application['application_name'],
+}
+
 class CredHubException < StandardError
 end
 
 def get_credhub_credential(credential)
   query_parts = credential.split '.'
   credential_name = query_parts[0]
-  credentials_json, stderr, status = Open3.capture3("credhub find -j -n #{credential_name}")
+  credentials_json, stderr, status = Open3.capture3($cf_env, "credhub find -j -n #{credential_name}")
   if status != 0
     raise CredHubException, "Could not find any variables that matched #{credential_name}"
   end
@@ -32,7 +39,7 @@ def get_credhub_credential(credential)
   query = ['.value'] + query_parts[1..-1]
   # This uses `jq` to make the selectors more familiar to people
   cmd = "credhub get -n #{credentials[0]['name']} -j | jq -r '#{query.join '.'}'"
-  credential_value, stderr, status = Open3.capture3(cmd)
+  credential_value, stderr, status = Open3.capture3($cf_env, cmd)
   if status != 0
     raise CredHubException "Failed to extract value from credential using: #{cmd}"
   end
