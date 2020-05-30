@@ -1,8 +1,12 @@
 ---
 language: credhub
-default_versions: []
-dependency_deprecation_dates: []
-dependencies: []
+dependencies:
+- name: credhub
+  version: 2.7.0
+  uri: https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/2.7.0/credhub-linux-2.7.0.tgz
+  sha256: a453c937caedbd15c30a348a6fd4a717bb321ce7c077d137ef2ea28eb8befb8b
+  cf_stacks:
+  - cflinuxfs3
 
 include_files:
   - README.md
@@ -14,5 +18,3 @@ include_files:
   - bin/release
   - bin/fetch-credhub-credentials.rb
   - bin/fetch-credhub-credentials.sh
-  - bin/credhub
-pre_package: scripts/download-credhub.sh
