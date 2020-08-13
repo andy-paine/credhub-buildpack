@@ -6,6 +6,11 @@ $base_path = ARGV[0]
 env_dir = ARGV[1]
 file_dir = ARGV[2]
 
+if ENV["CREDHUB_USE_CF_INSTANCE_IDENTITY"] == "true"
+  ENV["CREDHUB_CLIENT_CERT_PATH"] = ENV["CF_INSTANCE_CERT"]
+  ENV["CREDHUB_CLIENT_KEY_PATH"] = ENV["CF_INSTANCE_KEY"]
+end
+
 login_stdout, login_stderr, login_status = Open3.capture3('credhub login')
 if login_status != 0
   STDERR.puts 'Could not login in to CredHub, check the contents of $CREDHUB_SERVER, $CREDHUB_CA_CERT, $CREDHUB_CLIENT and $CREDHUB_SECRET environment variables'
